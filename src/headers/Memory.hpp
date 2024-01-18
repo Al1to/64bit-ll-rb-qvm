@@ -47,7 +47,7 @@ public:
 
 private:
     std::vector<u8> mem;
-    std::vector<u8> stack;
+    std::vector<u64> stack;
     c_Registers& cregs;
     std::unordered_map<u16, u32> data_addresses;
     std::unordered_map<u16, u32> labels_addresses;

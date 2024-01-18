@@ -6,6 +6,9 @@ NAME = qvm
 make:
 	$(CC) $(MAIN) $(QVM_SOURCE) -o $(NAME)
 
+dbg:
+	$(CC) -DDEBUG $(MAIN) $(QVM_SOURCE) -o $(NAME)
+
 test:
 	$(CC) $(MAIN) $(QVM_SOURCE) -o $(NAME)
 	./$(NAME) -i ./test.qasm

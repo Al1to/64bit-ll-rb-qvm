@@ -13,4 +13,11 @@ section .text
 
     _label:
         inc bl
+        call _add_ebx
+        inc rax
         hlt
+
+    _add_ebx:
+        add ebx, 234
+
+        ret

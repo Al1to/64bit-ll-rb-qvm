@@ -24,6 +24,7 @@ bool QPU::execute_instr(u8 opcode) {
 }
 
 void QPU::mov_rr_0x10() {
+    DBG("mov rr 10");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -32,6 +33,7 @@ void QPU::mov_rr_0x10() {
 }
 
 void QPU::mov_rl_0x11() {
+    DBG("mov rl 11");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     int reg_size = reg.second;
     u64 value;
@@ -50,6 +52,7 @@ void QPU::mov_rl_0x11() {
 }
 
 void QPU::mov_ra_0x12() {
+    DBG("mov ra 12");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = mem.fetch16();
 
@@ -78,6 +81,7 @@ void QPU::mov_ra_0x12() {
 }
 
 void QPU::mov_rar_0x13() {
+    DBG("mov rar 13");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = cregs.get_reg(reg2.first);
@@ -108,6 +112,7 @@ void QPU::mov_rar_0x13() {
 
 
 void QPU::lea_ra_0x14() {
+    DBG("lea ra 14");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = mem.fetch16();
 
@@ -115,6 +120,7 @@ void QPU::lea_ra_0x14() {
 }
 
 void QPU::lea_rar_0x15() {
+    DBG("lea rar 15");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -123,6 +129,7 @@ void QPU::lea_rar_0x15() {
 
 
 void QPU::add_rr_0x20() {
+    DBG("add rr 20");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -133,6 +140,7 @@ void QPU::add_rr_0x20() {
 }
 
 void QPU::add_rl_0x21() {
+    DBG("add rl 21");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     int reg_size = reg.second;
     u64 value;
@@ -154,6 +162,7 @@ void QPU::add_rl_0x21() {
 }
 
 void QPU::add_ra_0x22() {
+    DBG("add ra 22");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = mem.fetch16();
 
@@ -185,6 +194,7 @@ void QPU::add_ra_0x22() {
 }
 
 void QPU::add_rar_0x23() {
+    DBG("add rar 23");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = cregs.get_reg(reg2.first);
@@ -218,6 +228,7 @@ void QPU::add_rar_0x23() {
 
 
 void QPU::sub_rr_0x24() {
+    DBG("sub rr 24");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -228,6 +239,7 @@ void QPU::sub_rr_0x24() {
 }
 
 void QPU::sub_rl_0x25() {
+    DBG("sub rl 25");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     int reg_size = reg.second;
     u64 value;
@@ -249,6 +261,7 @@ void QPU::sub_rl_0x25() {
 }
 
 void QPU::sub_ra_0x26() {
+    DBG("sub ra 26");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = mem.fetch16();
 
@@ -280,6 +293,7 @@ void QPU::sub_ra_0x26() {
 }
 
 void QPU::sub_rar_0x27() {
+    DBG("sub rar 27");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = cregs.get_reg(reg2.first);
@@ -313,6 +327,7 @@ void QPU::sub_rar_0x27() {
 
 
 void QPU::inc_r_0x28() {
+    DBG("inc r 28");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
 
     cregs.set_reg(
@@ -322,6 +337,7 @@ void QPU::inc_r_0x28() {
 }
 
 void QPU::dec_r_0x29() {
+    DBG("dec r 29");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
 
     cregs.set_reg(
@@ -332,6 +348,7 @@ void QPU::dec_r_0x29() {
 
 
 void QPU::mul_rr_0x30() {
+    DBG("mul rr 30");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -342,6 +359,7 @@ void QPU::mul_rr_0x30() {
 }
 
 void QPU::mul_rl_0x31() {
+    DBG("mul rl 31");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     int reg_size = reg.second;
     u64 value;
@@ -363,6 +381,7 @@ void QPU::mul_rl_0x31() {
 }
 
 void QPU::mul_ra_0x32() {
+    DBG("mul ra 32");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = mem.fetch16();
 
@@ -394,6 +413,7 @@ void QPU::mul_ra_0x32() {
 }
 
 void QPU::mul_rar_0x33() {
+    DBG("mul rar 33");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = cregs.get_reg(reg2.first);
@@ -427,6 +447,7 @@ void QPU::mul_rar_0x33() {
 
 
 void QPU::div_rr_0x34() {
+    DBG("div rr 34");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -437,6 +458,7 @@ void QPU::div_rr_0x34() {
 }
 
 void QPU::div_rl_0x35() {
+    DBG("div rl 35");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     int reg_size = reg.second;
     u64 value;
@@ -458,6 +480,7 @@ void QPU::div_rl_0x35() {
 }
 
 void QPU::div_ra_0x36() {
+    DBG("div ra 36");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = mem.fetch16();
 
@@ -489,6 +512,7 @@ void QPU::div_ra_0x36() {
 }
 
 void QPU::div_rar_0x37() {
+    DBG("div rar 37");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
     u16 data_address = cregs.get_reg(reg2.first);
@@ -522,6 +546,7 @@ void QPU::div_rar_0x37() {
 
 
 void QPU::cmp_rr_0xA3() {
+    DBG("cmp rr a3");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
 
@@ -543,6 +568,7 @@ void QPU::cmp_rr_0xA3() {
 }
 
 void QPU::cmp_rl_0xB3() {
+    DBG("cmp rl b3");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     int reg_size = reg.second;
     u64 value1 = cregs.get_reg(reg.first);
@@ -573,6 +599,7 @@ void QPU::cmp_rl_0xB3() {
 }
 
 void QPU::cmp_ra_0xC3() {
+    DBG("cmp ra c3");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u64 value1 = cregs.get_reg(reg.first);
     u16 data_address = mem.fetch16();
@@ -613,6 +640,7 @@ void QPU::cmp_ra_0xC3() {
 }
 
 void QPU::cmp_rar_0xD3() {
+    DBG("cmp rar d3");
     auto reg1 = cregs.opcode_to_reg(mem.fetch8());
     auto reg2 = cregs.opcode_to_reg(mem.fetch8());
     u64 value1 = cregs.get_reg(reg1.first);
@@ -655,6 +683,7 @@ void QPU::cmp_rar_0xD3() {
 
 
 void QPU::jl_lbl_0x40() {
+    DBG("jl lbl 40");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -666,6 +695,7 @@ void QPU::jl_lbl_0x40() {
 }
 
 void QPU::jnl_lbl_0x41() {
+    DBG("jnl lbl 41");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -678,6 +708,7 @@ void QPU::jnl_lbl_0x41() {
 
 
 void QPU::je_lbl_0x42() {
+    DBG("je lbl 42");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -689,6 +720,7 @@ void QPU::je_lbl_0x42() {
 }
 
 void QPU::jne_lbl_0x43() {
+    DBG("jne lbl 43");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -701,6 +733,7 @@ void QPU::jne_lbl_0x43() {
 
 
 void QPU::jg_lbl_0x44() {
+    DBG("jg lbl 44");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -712,6 +745,7 @@ void QPU::jg_lbl_0x44() {
 }
 
 void QPU::jng_lbl_0x45() {
+    DBG("jng lbl 45");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -724,6 +758,7 @@ void QPU::jng_lbl_0x45() {
 
 
 void QPU::jle_lbl_0x46() {
+    DBG("jle lbl 46");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -735,6 +770,7 @@ void QPU::jle_lbl_0x46() {
 }
 
 void QPU::jge_lbl_0x47() {
+    DBG("jge lbl 47");
     if (compare == none) {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
@@ -747,17 +783,20 @@ void QPU::jge_lbl_0x47() {
 
 
 void QPU::jmp_lbl_0x48() {
+    DBG("jmp lbl 48");
     u16 label_number = mem.fetch16();
     cregs.set_prgc(mem.get_label_prgc(label_number));
 }
 
 void QPU::jtoa_lbl_0x49() {
+    DBG("jtoa lbl 49");
     u16 address = mem.fetch16();
     cregs.set_prgc(address);
 }
 
 
 void QPU::call_lbl_0x50() {
+    DBG("call lbl 50");
     u16 label = mem.fetch16();
     u32 addr_to = mem.get_label_prgc(label);
     u32 ret_addr = cregs.get_prgc();
@@ -769,6 +808,7 @@ void QPU::call_lbl_0x50() {
 }
 
 void QPU::ret_0x51() {
+    DBG("ret 51");
     u32 ret_addr = mem.pop_from_stack();
     mem.exit_frame();
 
@@ -777,12 +817,14 @@ void QPU::ret_0x51() {
 
 
 void QPU::push_r_0x52() {
+    DBG("push r 52");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u64 value = cregs.get_reg(reg.first);
     mem.push_to_stack(value);
 }
 
 void QPU::pop_r_0x53() {
+    DBG("pop r 53");
     auto reg = cregs.opcode_to_reg(mem.fetch8());
     u64 value = mem.pop_from_stack();
     cregs.set_reg(reg.first, value);

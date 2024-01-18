@@ -85,26 +85,40 @@ u32 Memory::get_label_prgc(u16 number) {
 }
 
 void Memory::push_to_stack(u64 value) {
-    for (int i = 56; i >= 0; i -= 8) {
-        stack.push_back((value >> i) & 0xFF);
-    }
+    // for (int i = 56; i >= 0; i -= 8) {
+    //     stack.push_back((value >> i) & 0xFF);
+    // }
+    stack.push_back(value);
     u32 sp = cregs.get_sp();
-    cregs.set_sp(sp + 8);
+    cregs.set_sp(sp + 1);
+    dbg_log_stack();
 }
 
 u64 Memory::pop_from_stack() {
+    DBG("test1 pop");
     u32 sp = cregs.get_sp();
     if (sp == 0xFFFFFFFF) {
         throw std::out_of_range("ERR: stack is empty");
     }
-    u64 value = 0;
-    for (int i = 0; i < 8; ++i) {
-        value = (value << 8) | stack[sp - 8 + i];
-    }
-    for (int i = 0; i < 8; ++i) {
-        stack.pop_back();
-    }
-    cregs.set_sp(sp - 8);
+    DBG("test2 pop");
+    dbg_log_stack();
+    u64 value = stack.back();
+    stack.pop_back();
+    // for (int i = 0; i < 8; ++i) {
+    //     value = (value << 8) | stack[sp - 8 + i]; // FIXME: in this line hernya
+    //     // value <<= 8;
+    //     // value |= stack[sp - 8 + i];
+    //     DBG("value:");
+    //     std::cout << std::hex << std::setw(16) << std::setfill('0') << value << "\n";
+    // }
+    // std::cout << "result value: " << std::hex << std::setw(16) << std::setfill('0') << value << "\n";
+    // DBG("test3 pop");
+    // for (int i = 0; i < 8; ++i) {
+    //     stack.pop_back();
+    // }
+    DBG("test4 pop");
+    cregs.set_sp(sp - 1);
+    dbg_log_stack();
     return value;
 }
 
@@ -114,25 +128,32 @@ void Memory::enter_frame() {
 
     u32 sp = cregs.get_sp();
     cregs.set_fp(sp);
+    dbg_log_stack();
 }
 
 void Memory::exit_frame() {
+    DBG("test1 ef");
     u32 fp = cregs.get_fp();
 
     if (fp == 0xFFFFFFFF) {
         throw std::out_of_range("ERR: no frame to exit");
     }
+    DBG("test2 ef");
+
+    dbg_log_stack();
 
     cregs.set_sp(fp);
+    DBG("test3 ef");
     cregs.set_fp(pop_from_stack());
+    DBG("test4 ef");
+    dbg_log_stack();
 }
 
 void Memory::dbg_log_mem() {
-    // std::cout << "dbg_log_mem\n";
     int count = 0;
     for (u8 i : mem) {
         std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(i) << " ";
-        count++;
+        ++count;
         if (count == 32) {
             std::cout << "\n";
             count = 0;
@@ -147,11 +168,10 @@ void Memory::dbg_log_mem() {
 }
 
 void Memory::dbg_log_stack() {
-    // std::cout << "dbg_log_stack\n";
     int count = 0;
     for (u8 i : stack) {
         std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(i);
-        count++;
+        ++count;
         if (count == 8) {
             std::cout << "\n";
             count = 0;

@@ -12,6 +12,12 @@ using u32 = uint32_t;
 using u64 = uint64_t;
 using i64 = int64_t;
 
+#ifdef DEBUG
+    #define DBG(x) std::cout << x << "\n";
+#else
+    #define DBG(x) 
+#endif
+
 inline std::string copy_qasm_code(std::string& path) {
     std::ifstream file(path);
     if (!file) {
