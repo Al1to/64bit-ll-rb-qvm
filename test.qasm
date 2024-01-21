@@ -5,19 +5,10 @@ section .data
 
 section .text
     _start:
-        mov eax, 5
-        lea ecx, &test
-        cmp eax, [ecx]
-        jl _label
+        qreg q1[3]
+        H q1[2]
+        RST q1[2]
+        ; meas ax, q1[2]
+
         hlt
 
-    _label:
-        inc bl
-        call _add_ebx
-        inc rax
-        hlt
-
-    _add_ebx:
-        add ebx, 234
-
-        ret

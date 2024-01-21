@@ -80,37 +80,46 @@ void q_Register::add_qubit(Qubit it) {
 }
 
 int q_Register::measure(unsigned int index) {
-    std::cout << "measure\n";
-    return qubits[index].measure();
+    auto result = qubits[index].measure();
+    std::cout << "    meas: " << result << "\n";
+    return result;
 }
 
 void q_Register::apply_X(unsigned int index) {
     Qubit& it = qubits[index];
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
     std::swap(it.alpha, it.beta);
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
 }
 
 void q_Register::apply_H(unsigned int index) {
     Qubit& it = qubits[index];
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
     auto alpha_temp = (it.alpha + it.beta) / std::sqrt(2);
     auto beta_temp = (it.alpha - it.beta) / std::sqrt(2);
     it.alpha = alpha_temp;
     it.beta = beta_temp;
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
 }
 
 void q_Register::apply_Y(unsigned int index) {
     Qubit& it = qubits[index];
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
     auto temp_alpha = std::complex<double>(0, -1) * it.beta;
     auto temp_beta = std::complex<double>(0, 1) * it.alpha;
     it.alpha = temp_alpha;
     it.beta = temp_beta;
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
 }
 
 void q_Register::apply_Z(unsigned int index) {
     Qubit& it = qubits[index];
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
     it.beta *= std::complex<double>(-1, 0);
+    std::cout << "    a: " << it.alpha << " b: " << it.beta << "\n";
 }
 
-void q_Register::apply_phase_shift(unsigned int index, double phase) {
+void q_Register::apply_rz(unsigned int index, double phase) {
     Qubit& it = qubits[index];
     it.beta *= std::exp(std::complex<double>(0, phase));
 }
@@ -121,7 +130,7 @@ void q_Register::apply_CNOT(unsigned int control_index, unsigned int target_inde
     }
 }
 
-void q_Register::apply_controlled_phase_shift(
+void q_Register::apply_crz(
     unsigned int control_index, 
     unsigned int target_index, 
     double phase
@@ -129,4 +138,43 @@ void q_Register::apply_controlled_phase_shift(
     if (std::norm(qubits[control_index].beta) > 0.5) {
         qubits[target_index].beta *= std::exp(std::complex<double>(0, phase));
     }
+}
+
+void q_Register::reset(unsigned int index) {
+    qubits[index].reset();
+}
+
+void q_Register::dbg_log_qubits() {
+    for (auto qubit : qubits) {
+        qubit.dbg_log_qubit();
+    }
+}
+
+void q_Registers::add_qreg(u16 number, u8 qubit_count) {
+    q_Register new_qreg;
+    for(int i=0; i<qubit_count; i++){
+        Qubit new_qubit;
+        new_qreg.qubits.push_back(new_qubit);
+    }
+    qregs.insert({number, new_qreg});
+}
+
+q_Register& q_Registers::get_qreg(u16 number) {
+    if(qregs.find(number) != qregs.end()){
+        return qregs[number];
+    }
+    else{
+        throw std::runtime_error("ERR: qreg " + std::to_string(number) + " does not exist");
+    }
+}
+
+void q_Registers::dbg_log_qregs() {
+    int count = 0;
+    std::cout << "\n";
+    for (auto& qreg : qregs) {
+        std::cout << "qreg " << count << ":\n";
+        qreg.second.dbg_log_qubits();
+        count++;
+    }
+    std::cout << "\n";
 }

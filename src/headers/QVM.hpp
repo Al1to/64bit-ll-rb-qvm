@@ -17,13 +17,14 @@ enum instr_type {
 class QVM {
 public:
     QVM(unsigned int &mem_size, std::string &qasm_code) 
-    : qasm_code(qasm_code), cregs(), mem(mem_size, cregs), qpu(mem, cregs) {};
+    : qasm_code(qasm_code), cregs(), qregs(), mem(mem_size, cregs), qpu(mem, cregs, qregs) {};
 
     void run();
 
 private:
     std::string qasm_code;
     c_Registers cregs;
+    q_Registers qregs;
     Memory mem;
     QPU qpu;
 

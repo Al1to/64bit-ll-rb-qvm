@@ -2,6 +2,7 @@
 #include "./headers/QVM.hpp"
 
 int main(int argc, char* argv[]) {
+    std::srand(std::time(0));
     std::string qasm_file_path = "";
     std::string input_flag = "-i";
 

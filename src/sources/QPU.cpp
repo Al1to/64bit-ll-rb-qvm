@@ -832,40 +832,80 @@ void QPU::pop_r_0x53() {
 
 
 void QPU::qreg_qc_0x60() {
+    DBG("qreg qc 60");
+    u16 number = mem.fetch16();
+    u8 count = mem.fetch8();
 
+    qregs.add_qreg(number, count);
 }
 
-void QPU::meas_qr_0x61() {
+void QPU::meas_rq_0x61() {
+    DBG("meas rq 60");
+    auto reg = cregs.opcode_to_reg(mem.fetch8());
+    u16 qreg_number = mem.fetch16();
+    u8 qubit_index = mem.fetch8();
 
+    auto &qreg = qregs.get_qreg(qreg_number);
+    cregs.set_reg(reg.first, qreg.measure(qubit_index));
 }
 
 
 void QPU::h_q_0x62() {
+    DBG("H q 62");
+    u16 qreg_number = mem.fetch16();
+    u8 qubit_index = mem.fetch8();
 
+    auto &qreg = qregs.get_qreg(qreg_number);
+    qreg.apply_H(qubit_index);
 }
 
 void QPU::x_q_0x63() {
+    DBG("X q 63");
+    u16 qreg_number = mem.fetch16();
+    u8 qubit_index = mem.fetch8();
 
+    auto &qreg = qregs.get_qreg(qreg_number);
+    qreg.apply_X(qubit_index);
 }
 
 void QPU::y_q_0x64() {
+    DBG("Y q 64");
+    u16 qreg_number = mem.fetch16();
+    u8 qubit_index = mem.fetch8();
 
+    auto &qreg = qregs.get_qreg(qreg_number);
+    qreg.apply_Y(qubit_index);
 }
 
 void QPU::z_q_0x65() {
+    DBG("Z q 65");
+    u16 qreg_number = mem.fetch16();
+    u8 qubit_index = mem.fetch8();
+
+    auto &qreg = qregs.get_qreg(qreg_number);
+    qreg.apply_Z(qubit_index);
+}
+
+
+void QPU::rz_qp_0x66() {
 
 }
 
 
-void QPU::ps_qp_0x66() {
+void QPU::cx_qq_0x67() {
+
+}
+
+void QPU::crz_qqp_0x68() {
 
 }
 
 
-void QPU::cx_q_0x67() {
+void QPU::rst_q_0x69() {
+    DBG("rst q 69");
+    u16 qreg_number = mem.fetch16();
+    u8 qubit_index = mem.fetch8();
 
-}
-
-void QPU::cps_qp_0x68() {
-
+    auto &qreg = qregs.get_qreg(qreg_number);
+    qreg.reset(qubit_index);
 }

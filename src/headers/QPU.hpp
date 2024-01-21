@@ -15,7 +15,7 @@ enum CMP {
 
 class QPU {
 public:
-    QPU(Memory &mem, c_Registers &cregs) : mem(mem), cregs(cregs) {
+    QPU(Memory &mem, c_Registers &cregs, q_Registers &qregs) : mem(mem), cregs(cregs), qregs(qregs) {
         instrs_set = {
             { 0x10, [this]() {  mov_rr_0x10(); } },
             { 0x11, [this]() {  mov_rl_0x11(); } },
@@ -75,17 +75,19 @@ public:
             { 0x53, [this]() {  pop_r_0x53(); } },
 
             { 0x60, [this]() {  qreg_qc_0x60(); } },
-            { 0x61, [this]() {  meas_qr_0x61(); } },
+            { 0x61, [this]() {  meas_rq_0x61(); } },
 
             { 0x62, [this]() {  h_q_0x62(); } },
             { 0x63, [this]() {  x_q_0x63(); } },
             { 0x64, [this]() {  y_q_0x64(); } },
             { 0x65, [this]() {  z_q_0x65(); } },
 
-            { 0x66, [this]() {  ps_qp_0x66(); } },
+            { 0x66, [this]() {  rz_qp_0x66(); } },
 
-            { 0x67, [this]() {  cx_q_0x67(); } },
-            { 0x68, [this]() {  cps_qp_0x68(); } },
+            { 0x67, [this]() {  cx_qq_0x67(); } },
+            { 0x68, [this]() {  crz_qqp_0x68(); } },
+
+            { 0x69, [this]() {  rst_q_0x69(); } },
         };
     }
 
@@ -94,6 +96,7 @@ public:
 private:
     Memory& mem;
     c_Registers& cregs;
+    q_Registers& qregs;
     CMP compare = none;
     std::unordered_map<u8, std::function<void()>> instrs_set;
 
@@ -198,7 +201,7 @@ private:
 
     void qreg_qc_0x60();
 
-    void meas_qr_0x61();
+    void meas_rq_0x61();
 
 
     void h_q_0x62();
@@ -210,10 +213,13 @@ private:
     void z_q_0x65();
 
 
-    void ps_qp_0x66();
+    void rz_qp_0x66();
 
 
-    void cx_q_0x67();
+    void cx_qq_0x67();
 
-    void cps_qp_0x68();
+    void crz_qqp_0x68();
+
+
+    void rst_q_0x69();
 };

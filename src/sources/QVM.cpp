@@ -12,8 +12,12 @@ void QVM::run() {
         }
     }
 
+    qregs.dbg_log_qregs();
+
     cregs.dbg_log_regs_branch(0);
     cregs.dbg_log_regs_branch(1);
+    cregs.dbg_log_regs_branch(2);
+    cregs.dbg_log_regs_branch(3);
 }
 
 void QVM::load_to_mem() {
@@ -23,11 +27,21 @@ void QVM::load_to_mem() {
     std::unordered_map<std::string, u16> data_numbers;
     u16 data_counter = 0;
 
+    std::unordered_map<std::string, u16> qreg_numbers;
+    u16 qregs_counter = 0;
+
     unsigned long long cur = 0;
     unsigned int cur_byte = 0;
 
     while (cur < qasm_code.length()) {
         while (isspace(qasm_code[cur]) || qasm_code[cur] == ',' || qasm_code[cur] == '[' || qasm_code[cur] == ']') {
+            ++cur;
+        }
+
+        if (qasm_code[cur] == ';') {
+            do {
+                ++cur;
+            } while (qasm_code[cur] != '\n');
             ++cur;
         }
 
@@ -348,6 +362,55 @@ void QVM::load_to_mem() {
             else if (lexeme == "qreg") {
                 mem.write(cur_byte, 0x60);
                 ++cur_byte;
+
+                while (isspace(qasm_code[cur])) {
+                    ++cur;
+                }
+
+                std::string lexeme;
+
+                if (isalpha(qasm_code[cur])) {
+                    lexeme = std::string() + qasm_code[cur];
+                    ++cur;
+
+                    while (isalpha(qasm_code[cur]) || qasm_code[cur] == '_' || isdigit(qasm_code[cur])) {
+                        lexeme += std::string() + qasm_code[cur];
+                        ++cur;
+                    }
+
+                    qreg_numbers[lexeme] = qregs_counter;
+                    mem.write(cur_byte, qregs_counter & 0xFF);
+                    ++cur_byte;
+                    mem.write(cur_byte, qregs_counter << 8);
+                    ++cur_byte;
+                    ++qregs_counter;
+
+                    if (qasm_code[cur] == '[') {
+                        ++cur;
+
+                        std::string count_str;
+                        while (isdigit(qasm_code[cur])) {
+                            count_str += std::string() + qasm_code[cur];
+                            ++cur;
+                        }
+                        if (qasm_code[cur] == ']') ++cur;
+
+                        u8 count = std::stoi(count_str);
+
+                        if (count > 0xFF) {
+                            throw std::runtime_error("ERR: too many qubits");
+                        }
+
+                        mem.write(cur_byte, count);
+                        ++cur_byte;
+
+                    } else {
+                        throw std::runtime_error("ERR: syntax error, expected `qreg name[count]`");
+                    }
+
+                } else {
+                    throw std::runtime_error("ERR: syntax error, expected `qreg name[count]`");
+                }
             }
 
             else if (lexeme == "meas") {
@@ -355,56 +418,100 @@ void QVM::load_to_mem() {
                 ++cur_byte;
             }
 
-            else if (lexeme == "h") {
+            else if (lexeme == "H") {
                 mem.write(cur_byte, 0x62);
                 ++cur_byte;
             }
 
-            else if (lexeme == "x") {
+            else if (lexeme == "X") {
                 mem.write(cur_byte, 0x63);
                 ++cur_byte;
             }
 
-            else if (lexeme == "y") {
+            else if (lexeme == "Y") {
                 mem.write(cur_byte, 0x64);
                 ++cur_byte;
             }
 
-            else if (lexeme == "z") {
+            else if (lexeme == "Z") {
                 mem.write(cur_byte, 0x65);
                 ++cur_byte;
             }
 
-            else if (lexeme == "ps") {
+            else if (lexeme == "RZ") {
                 mem.write(cur_byte, 0x66);
                 ++cur_byte;
             }
 
-            else if (lexeme == "cx") {
+            else if (lexeme == "CX") {
                 mem.write(cur_byte, 0x67);
                 ++cur_byte;
             }
 
-            else if (lexeme == "cps") {
+            else if (lexeme == "CRZ") {
                 mem.write(cur_byte, 0x68);
+                ++cur_byte;
+            }
+
+            else if (lexeme == "RST") {
+                mem.write(cur_byte, 0x69);
                 ++cur_byte;
             }
 
             // quantum instrs -> 0x79
 
             else {
-                auto it = data_numbers.find(lexeme);
+                if (qasm_code[cur] == '[') {
+                    auto it = qreg_numbers.find(lexeme);
 
-                if (it == data_numbers.end()) {
-                    data_numbers.insert({lexeme, data_counter});
-                    mem.add_data(data_counter, cur_byte);
-                    ++data_counter;
+                    if (it == qreg_numbers.end()) {
+                        qreg_numbers.insert({lexeme, qregs_counter});
+                        mem.add_data(qregs_counter, cur_byte);
+                        ++qregs_counter;
+
+                    } else {
+                        mem.write(cur_byte, it->second & 0xFF);
+                        ++cur_byte;
+                        mem.write(cur_byte, it->second << 8);
+                        ++cur_byte;
+                    }
+
+                    ++cur;
+
+                    std::string number_str;
+                    while (isdigit(qasm_code[cur])) {
+                        number_str += std::string() + qasm_code[cur];
+                        ++cur;
+                    }
+                    if (qasm_code[cur] == ']') {
+                        ++cur;
+                    } else {
+                        throw std::runtime_error("ERR: syntax error, expected `instr qreg_name[qubits_count]`");
+                    }
+
+                    u8 number = std::stoi(number_str);
+
+                    if (number > 0xFF) {
+                        throw std::runtime_error("ERR: too many qubits");
+                    }
+
+                    mem.write(cur_byte, number);
+                    ++cur_byte;
 
                 } else {
-                    mem.write(cur_byte, it->second & 0xFF);
-                    ++cur_byte;
-                    mem.write(cur_byte, it->second << 8);
-                    ++cur_byte;
+                    auto it = data_numbers.find(lexeme);
+
+                    if (it == data_numbers.end()) {
+                        data_numbers.insert({lexeme, data_counter});
+                        mem.add_data(data_counter, cur_byte);
+                        ++data_counter;
+
+                    } else {
+                        mem.write(cur_byte, it->second & 0xFF);
+                        ++cur_byte;
+                        mem.write(cur_byte, it->second << 8);
+                        ++cur_byte;
+                    }
                 }
             }
 

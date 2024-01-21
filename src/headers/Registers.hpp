@@ -68,13 +68,28 @@ struct q_Register {
 
     void apply_Z(unsigned int index);
 
-    void apply_phase_shift(unsigned int index, double phase);
+    void apply_rz(unsigned int index, double phase);
 
     void apply_CNOT(unsigned int control_index, unsigned int target_index);
 
-    void apply_controlled_phase_shift(
+    void apply_crz(
         unsigned int control_index, 
         unsigned int target_index, 
         double phase
     );
+
+    void reset(unsigned int index);
+
+    void dbg_log_qubits();
+};
+
+class q_Registers {
+public:
+    std::unordered_map<u16, q_Register> qregs;
+
+    void add_qreg(u16 number, u8 qubit_count);
+
+    q_Register& get_qreg(u16 number);
+
+    void dbg_log_qregs();
 };
