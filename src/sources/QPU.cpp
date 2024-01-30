@@ -127,6 +127,23 @@ void QPU::lea_rar_0x15() {
     cregs.set_reg(reg1.first, cregs.get_reg(reg2.first));
 }
 
+void QPU::out_r_0x16() {
+    DBG("out r 16");
+    auto reg = cregs.opcode_to_reg(mem.fetch8());
+
+    u64 value = cregs.get_reg(reg.first);
+    std::cout << std::dec << value << "\n";
+}
+
+void QPU::in_r_0x17() {
+    DBG("in r 17");
+    auto reg = cregs.opcode_to_reg(mem.fetch8());
+
+    u64 value = cregs.get_reg(reg.first);
+    std::cout << "> ";
+    std::cin >> value;
+    cregs.set_reg(reg.first, value);
+}
 
 void QPU::add_rr_0x20() {
     DBG("add rr 20");
@@ -688,8 +705,9 @@ void QPU::jl_lbl_0x40() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare == less) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -700,8 +718,9 @@ void QPU::jnl_lbl_0x41() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare != less) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -713,8 +732,9 @@ void QPU::je_lbl_0x42() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare == equal) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -725,8 +745,9 @@ void QPU::jne_lbl_0x43() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare != equal) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -738,8 +759,9 @@ void QPU::jg_lbl_0x44() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare == great) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -750,8 +772,9 @@ void QPU::jng_lbl_0x45() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare != great) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -763,8 +786,9 @@ void QPU::jle_lbl_0x46() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+
     if (compare == less || compare == equal) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -775,8 +799,9 @@ void QPU::jge_lbl_0x47() {
         throw std::runtime_error("ERR: conditional jump before comparison instruction.");
     }
 
+    u16 label = mem.fetch16();
+    
     if (compare == great || compare == equal) {
-        u16 label = mem.fetch16();
         cregs.set_prgc(mem.get_label_prgc(label));
     }
 }
@@ -846,6 +871,11 @@ void QPU::meas_rq_0x61() {
     u8 qubit_index = mem.fetch8();
 
     auto &qreg = qregs.get_qreg(qreg_number);
+
+    std::cout << "    cur qreg:\n"; 
+    qreg.dbg_log_qubits();
+    std::cout << "    --------\n";
+
     cregs.set_reg(reg.first, qreg.measure(qubit_index));
 }
 
@@ -888,16 +918,25 @@ void QPU::z_q_0x65() {
 
 
 void QPU::rz_qp_0x66() {
-
+    // TODO:
 }
 
 
 void QPU::cx_qq_0x67() {
+    DBG("CX qq 6");
+    u16 qreg1_number = mem.fetch16();
+    u8 qubit1_index = mem.fetch8();
 
+    u16 qreg2_number = mem.fetch16();
+    u8 qubit2_index = mem.fetch8();
+
+    auto &qreg1 = qregs.get_qreg(qreg1_number);
+
+    qreg1.apply_CNOT(qubit1_index, qubit2_index);
 }
 
 void QPU::crz_qqp_0x68() {
-
+    // TODO:
 }
 
 
@@ -908,4 +947,42 @@ void QPU::rst_q_0x69() {
 
     auto &qreg = qregs.get_qreg(qreg_number);
     qreg.reset(qubit_index);
+}
+
+
+void QPU::swap_qq_0x70() {
+    DBG("swap qq 70");
+    u16 qreg1_number = mem.fetch16();
+    u8 qubit1_index = mem.fetch8();
+
+    auto &qreg1 = qregs.get_qreg(qreg1_number);
+    auto &qubit1 = qreg1.get_qubit(qubit1_index);
+
+    u16 qreg2_number = mem.fetch16();
+    u8 qubit2_index = mem.fetch8();
+
+    auto &qreg2 = qregs.get_qreg(qreg2_number);
+    auto &qubit2 = qreg2.get_qubit(qubit2_index);
+
+
+    std::complex<double> alpha1 = qubit1.get_alpha();
+    std::complex<double> beta1 = qubit1.get_beta();
+
+    std::complex<double> alpha2 = qubit2.get_alpha();
+    std::complex<double> beta2 = qubit2.get_beta();
+
+    std::cout 
+    << "    before:\n    a: " << qubit1.get_alpha() << " b: " << qubit1.get_beta()
+    << "\n    a: " << qubit2.get_alpha() << " b: " << qubit2.get_beta() << "\n";
+
+
+    qubit1.set_alpha(alpha2);
+    qubit1.set_beta(beta2);
+
+    qubit2.set_alpha(alpha1);
+    qubit2.set_beta(beta1);
+
+    std::cout 
+    << "    after:\n    a: " << qubit1.get_alpha() << " b: " << qubit1.get_beta()
+    << "\n    a: " << qubit2.get_alpha() << " b: " << qubit2.get_beta() << "\n";
 }

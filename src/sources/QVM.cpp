@@ -189,6 +189,16 @@ void QVM::load_to_mem() {
                 }
             }
 
+            else if (lexeme == "out") {
+                mem.write(cur_byte, 0x16);
+                ++cur_byte;
+            }
+
+            else if (lexeme == "in") {
+                mem.write(cur_byte, 0x17);
+                ++cur_byte;
+            }
+
             else if (lexeme == "add") {
                 instr_type type = check_instr_type(cur);
 
@@ -379,9 +389,9 @@ void QVM::load_to_mem() {
                     }
 
                     qreg_numbers[lexeme] = qregs_counter;
-                    mem.write(cur_byte, qregs_counter & 0xFF);
-                    ++cur_byte;
                     mem.write(cur_byte, qregs_counter << 8);
+                    ++cur_byte;
+                    mem.write(cur_byte, qregs_counter & 0xFF);
                     ++cur_byte;
                     ++qregs_counter;
 
@@ -458,6 +468,11 @@ void QVM::load_to_mem() {
                 ++cur_byte;
             }
 
+            else if (lexeme == "SWAP") {
+                mem.write(cur_byte, 0x70);
+                ++cur_byte;
+            }
+
             // quantum instrs -> 0x79
 
             else {
@@ -470,9 +485,9 @@ void QVM::load_to_mem() {
                         ++qregs_counter;
 
                     } else {
-                        mem.write(cur_byte, it->second & 0xFF);
-                        ++cur_byte;
                         mem.write(cur_byte, it->second << 8);
+                        ++cur_byte;
+                        mem.write(cur_byte, it->second & 0xFF);
                         ++cur_byte;
                     }
 
@@ -507,9 +522,9 @@ void QVM::load_to_mem() {
                         ++data_counter;
 
                     } else {
-                        mem.write(cur_byte, it->second & 0xFF);
-                        ++cur_byte;
                         mem.write(cur_byte, it->second << 8);
+                        ++cur_byte;
+                        mem.write(cur_byte, it->second & 0xFF);
                         ++cur_byte;
                     }
                 }

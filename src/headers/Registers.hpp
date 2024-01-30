@@ -58,6 +58,8 @@ struct q_Register {
 
     void add_qubit(Qubit it);
 
+    Qubit& get_qubit(unsigned int index); 
+
     int measure(unsigned int index);
 
     void apply_X(unsigned int index);

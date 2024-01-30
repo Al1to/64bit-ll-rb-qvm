@@ -25,6 +25,9 @@ public:
             { 0x14, [this]() {  lea_ra_0x14(); } },
             { 0x15, [this]() {  lea_rar_0x15(); } },
 
+            { 0x16, [this]() {  out_r_0x16(); } },
+            { 0x17, [this]() {  in_r_0x17(); } },
+
             { 0x20, [this]() {  add_rr_0x20(); } },
             { 0x21, [this]() {  add_rl_0x21(); } },
             { 0x22, [this]() {  add_ra_0x22(); } },
@@ -88,6 +91,8 @@ public:
             { 0x68, [this]() {  crz_qqp_0x68(); } },
 
             { 0x69, [this]() {  rst_q_0x69(); } },
+
+            { 0x70, [this]() {  swap_qq_0x70(); } },
         };
     }
 
@@ -112,6 +117,11 @@ private:
     void lea_ra_0x14();
 
     void lea_rar_0x15();
+
+
+    void out_r_0x16();
+
+    void in_r_0x17();
 
 
     void add_rr_0x20();
@@ -222,4 +232,7 @@ private:
 
 
     void rst_q_0x69();
+
+
+    void swap_qq_0x70();
 };

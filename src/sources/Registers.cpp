@@ -79,6 +79,10 @@ void q_Register::add_qubit(Qubit it) {
     qubits.push_back(it);
 }
 
+Qubit& q_Register::get_qubit(unsigned int index) {
+    return qubits[index];
+}
+
 int q_Register::measure(unsigned int index) {
     auto result = qubits[index].measure();
     std::cout << "    meas: " << result << "\n";

@@ -15,5 +15,13 @@ struct Qubit {
 
     void reset();
 
+    std::complex<double> get_alpha();
+
+    std::complex<double> get_beta();
+
+    void set_alpha(std::complex<double> alpha);
+
+    void set_beta(std::complex<double> beta);
+
     void dbg_log_qubit();
 };
