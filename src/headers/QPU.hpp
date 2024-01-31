@@ -69,7 +69,7 @@ public:
             { 0x47, [this]() {  jge_lbl_0x47(); } },
 
             { 0x48, [this]() {  jmp_lbl_0x48(); } },
-            { 0x49, [this]() {  jtoa_lbl_0x49(); } },
+            { 0x49, [this]() {  jtoa_ra_0x49(); } },
 
             { 0x50, [this]() {  call_lbl_0x50(); } },
             { 0x51, [this]() {  ret_0x51(); } },
@@ -196,7 +196,7 @@ private:
 
     void jmp_lbl_0x48();
 
-    void jtoa_lbl_0x49();
+    void jtoa_ra_0x49();
 
 
     void call_lbl_0x50();

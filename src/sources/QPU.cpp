@@ -2,6 +2,7 @@
 
 bool QPU::execute_instr(u8 opcode) {
     if (opcode == 0xFF) {
+        std::cout << "hlt" << "\n";
         return false;
     }
 
@@ -813,10 +814,16 @@ void QPU::jmp_lbl_0x48() {
     cregs.set_prgc(mem.get_label_prgc(label_number));
 }
 
-void QPU::jtoa_lbl_0x49() {
-    DBG("jtoa lbl 49");
-    u16 address = mem.fetch16();
-    cregs.set_prgc(address);
+void QPU::jtoa_ra_0x49() {
+    DBG("jtoa ra 49");
+    auto reg = cregs.opcode_to_reg(mem.fetch8());
+    // cregs.set_prgc(
+    //     mem.get_data_prgc(
+    //         cregs.get_reg( // TODO:
+    //             reg.first
+    //         )
+    //     )
+    // );
 }
 
 

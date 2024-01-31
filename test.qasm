@@ -1,36 +1,45 @@
 entry _start
 
+section .data
+      ; array start
+    strt_and_size byte 03
+    a byte 12
+    b byte 37
+    c byte 09
+      ; array end
+
 section .text
-
     _start:
-        qreg q1[1]
-        qreg q2[1]
+        call _print_array
 
-        H q1[0]
-        H q2[0]
+        hlt
 
-        meas ah, q1[0]
-        meas al, q2[0]
+    _print_array:
+        push eax
+        push ebx
+        push dx
 
-        cmp ah, al
-        jl _al
-        je _e
-        jg _ah
+        lea ebx, &strt_and_size
+        mov dl, [ebx]
+        mov dh, 1
+        add ebx, 1
 
-        _al:
-            ; if ah < al out 0
-            mov bx, 0
-            out bx
-            hlt
+        _strt_loop:
+            mov eax, [ebx]
+            out eax
 
-        _e:
-            ; if ah == al out 1
-            mov bx, 1
-            out bx
-            hlt
+            cmp dh, dl
 
-        _ah:
-            ; if ah > al out 2
-            mov bx, 2
-            out bx
-            hlt
+            jge _end_loop
+
+            inc dh
+            add ebx, 1
+            
+            jmp _strt_loop
+
+        _end_loop:
+            pop dx
+            pop ebx
+            pop eax
+
+            ret

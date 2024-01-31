@@ -591,12 +591,13 @@ void QVM::load_to_mem() {
 
                 if (qasm_code[cur] == ':') {
                     mem.add_label(labels_counter, cur_byte);
+                    ++labels_counter;
                     ++cur;
                 } else {
                     mem.write(cur_byte, labels_counter << 8);
                     ++cur_byte;
                     mem.write(cur_byte, labels_counter & 0xFF);
-                    ++labels_counter;
+                    // ++labels_counter;
                     ++cur_byte;
                 }
 

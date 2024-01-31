@@ -91,17 +91,17 @@ void Memory::push_to_stack(u64 value) {
     stack.push_back(value);
     u32 sp = cregs.get_sp();
     cregs.set_sp(sp + 1);
-    dbg_log_stack();
+    // dbg_log_stack();
 }
 
 u64 Memory::pop_from_stack() {
-    DBG("test1 pop");
+    // DBG("test1 pop");
     u32 sp = cregs.get_sp();
     if (sp == 0xFFFFFFFF) {
         throw std::out_of_range("ERR: stack is empty");
     }
-    DBG("test2 pop");
-    dbg_log_stack();
+    // DBG("test2 pop");
+    // dbg_log_stack();
     u64 value = stack.back();
     stack.pop_back();
     // for (int i = 0; i < 8; ++i) {
@@ -116,9 +116,9 @@ u64 Memory::pop_from_stack() {
     // for (int i = 0; i < 8; ++i) {
     //     stack.pop_back();
     // }
-    DBG("test4 pop");
+    // DBG("test4 pop");
     cregs.set_sp(sp - 1);
-    dbg_log_stack();
+    // dbg_log_stack();
     return value;
 }
 
@@ -128,25 +128,25 @@ void Memory::enter_frame() {
 
     u32 sp = cregs.get_sp();
     cregs.set_fp(sp);
-    dbg_log_stack();
+    // dbg_log_stack();
 }
 
 void Memory::exit_frame() {
-    DBG("test1 ef");
+    // DBG("test1 ef");
     u32 fp = cregs.get_fp();
 
     if (fp == 0xFFFFFFFF) {
         throw std::out_of_range("ERR: no frame to exit");
     }
-    DBG("test2 ef");
+    // DBG("test2 ef");
 
-    dbg_log_stack();
+    // dbg_log_stack();
 
     cregs.set_sp(fp);
-    DBG("test3 ef");
+    // DBG("test3 ef");
     cregs.set_fp(pop_from_stack());
-    DBG("test4 ef");
-    dbg_log_stack();
+    // DBG("test4 ef");
+    // dbg_log_stack();
 }
 
 void Memory::dbg_log_mem() {
