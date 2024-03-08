@@ -11,6 +11,9 @@ section .data
 section .text
     _start:
         call _print_array
+        mov al, 23
+        set &b, al
+        call _print_array
 
         hlt
 
@@ -22,7 +25,7 @@ section .text
         lea ebx, &strt_and_size
         mov dl, [ebx]
         mov dh, 1
-        add ebx, 1
+        inc ebx
 
         _strt_loop:
             mov eax, [ebx]
@@ -33,7 +36,7 @@ section .text
             jge _end_loop
 
             inc dh
-            add ebx, 1
+            inc ebx
             
             jmp _strt_loop
 

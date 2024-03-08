@@ -12,6 +12,10 @@ enum instr_type {
     reg_lit,
     reg_addr,
     reg_addr_in_reg,
+    addr_reg,
+    addr_lit,
+    addr_in_reg_reg,
+    addr_in_reg_lit,
 };
 
 class QVM {

@@ -863,6 +863,83 @@ void QPU::pop_r_0x53() {
 }
 
 
+void QPU::set_ar_0x54() {
+    DBG("set ar 54");
+    u16 data_address = mem.fetch16();
+    auto reg = cregs.opcode_to_reg(mem.fetch8());
+
+    u32 save_prgc = cregs.get_prgc();
+
+    cregs.set_prgc(mem.get_data_prgc(data_address));
+
+    u8 data_size = mem.fetch8();
+
+    int reg_size = reg.second;
+
+    if (data_size == 0x01 && reg_size == 8) {
+        mem.write(cregs.get_prgc(), cregs.get_reg(reg.first));
+    } else if (data_size == 0x02 && reg_size == 16) {
+        for (int i = 0; i <= 1; ++i) {
+            mem.write(cregs.get_prgc(), cregs.get_reg(reg.first) + i);
+        }
+    } else if (data_size == 0x04 && reg_size == 32) {
+        for (int i = 0; i <= 3; ++i) {
+            mem.write(cregs.get_prgc(), cregs.get_reg(reg.first) + i);
+        }
+    } else if (data_size == 0x08 && reg_size == 64) {
+        for (int i = 0; i <= 7; ++i) {
+            mem.write(cregs.get_prgc(), cregs.get_reg(reg.first) + i);
+        }
+    } else {
+        throw std::runtime_error("ERR: invalid data size: " + data_size);
+    }
+
+    cregs.set_prgc(save_prgc);
+}
+
+void QPU::set_al_0x55() {
+    // TODO: fignya
+}
+
+void QPU::set_arr_0x56() {
+    DBG("set arr 56");
+    u16 data_address = cregs.get_reg(cregs.opcode_to_reg(mem.fetch8()).first);
+    auto reg = cregs.opcode_to_reg(mem.fetch8());
+
+    u32 save_prgc = cregs.get_prgc();
+
+    cregs.set_prgc(mem.get_data_prgc(data_address));
+
+    u8 data_size = mem.fetch8();
+
+    int reg_size = reg.second;
+
+    if (data_size == 0x01 && reg_size == 8) {
+        mem.write(cregs.get_prgc(), cregs.get_reg(reg.first));
+    } else if (data_size == 0x02 && reg_size == 16) {
+        for (int i = 0; i <= 1; ++i) {
+            mem.write(cregs.get_prgc(), cregs.get_reg(reg.first) + i);
+        }
+    } else if (data_size == 0x04 && reg_size == 32) {
+        for (int i = 0; i <= 3; ++i) {
+            mem.write(cregs.get_prgc(), cregs.get_reg(reg.first) + i);
+        }
+    } else if (data_size == 0x08 && reg_size == 64) {
+        for (int i = 0; i <= 7; ++i) {
+            mem.write(cregs.get_prgc(), cregs.get_reg(reg.first) + i);
+        }
+    } else {
+        throw std::runtime_error("ERR: invalid data size: " + data_size);
+    }
+
+    cregs.set_prgc(save_prgc);
+}
+
+void QPU::set_arl_0x57() {
+    // TODO: fignya
+}
+
+
 void QPU::qreg_qc_0x60() {
     DBG("qreg qc 60");
     u16 number = mem.fetch16();

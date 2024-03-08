@@ -77,6 +77,11 @@ public:
             { 0x52, [this]() {  push_r_0x52(); } },
             { 0x53, [this]() {  pop_r_0x53(); } },
 
+            { 0x54, [this]() {  set_ar_0x54(); } },
+            { 0x55, [this]() {  set_al_0x55(); } },
+            { 0x56, [this]() {  set_arr_0x56(); } },
+            { 0x57, [this]() {  set_arl_0x57(); } },
+
             { 0x60, [this]() {  qreg_qc_0x60(); } },
             { 0x61, [this]() {  meas_rq_0x61(); } },
 
@@ -207,6 +212,15 @@ private:
     void push_r_0x52();
 
     void pop_r_0x53();
+
+
+    void set_ar_0x54();
+
+    void set_al_0x55();
+
+    void set_arr_0x56();
+
+    void set_arl_0x57();
 
 
     void qreg_qc_0x60();

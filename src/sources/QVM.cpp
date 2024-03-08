@@ -369,6 +369,24 @@ void QVM::load_to_mem() {
                 ++cur_byte;
             }
 
+            else if (lexeme == "set") {
+                instr_type type = check_instr_type(cur);
+
+                if (type == addr_reg) {
+                    mem.write(cur_byte, 0x54);
+                    ++cur_byte;
+                } else if (type == addr_lit) {
+                    mem.write(cur_byte, 0x55);
+                    ++cur_byte;
+                } else if (type == addr_in_reg_reg) {
+                    mem.write(cur_byte, 0x56);
+                    ++cur_byte;
+                } else if (type == addr_in_reg_lit) {
+                    mem.write(cur_byte, 0x57);
+                    ++cur_byte;
+                }
+            }
+
             else if (lexeme == "qreg") {
                 mem.write(cur_byte, 0x60);
                 ++cur_byte;
@@ -662,27 +680,67 @@ instr_type QVM::check_instr_type(unsigned long long &cur) {
         ++cur;
     }
 
-    while (isalpha(qasm_code[cur])) {
+    if (qasm_code[cur] == '[') {
         ++cur;
-    }
+        while (isalpha(qasm_code[cur]) || qasm_code[cur] == ']') {
+            ++cur;
+        }
 
-    while (isspace(qasm_code[cur]) || qasm_code[cur] == ',') {
-        ++cur;
-    }
+        while (isspace(qasm_code[cur]) || qasm_code[cur] == ',') {
+            ++cur;
+        }
 
-    if (isalpha(qasm_code[cur])) {
-        cur = save_cur;
-        return instr_type::reg_reg;
-    } else if (isdigit(qasm_code[cur]) || (qasm_code[cur] == '-' && isdigit(qasm_code[cur + 1]))) {
-        cur = save_cur;
-        return instr_type::reg_lit;
-    } else if (qasm_code[cur] == '&') {
-        cur = save_cur;
-        return instr_type::reg_addr;
-    } else if (qasm_code[cur] == '[') {
-        cur = save_cur;
-        return instr_type::reg_addr_in_reg;
+        if (isalpha(qasm_code[cur])) {
+            cur = save_cur;
+            return instr_type::addr_in_reg_reg;
+        } else if (isdigit(qasm_code[cur]) || (qasm_code[cur] == '-' && isdigit(qasm_code[cur + 1]))) {
+            cur = save_cur;
+            return instr_type::addr_in_reg_lit;
+        }
     }
     
-    throw std::runtime_error("ERR: syntax error, expected `instr reg, reg`, or `instr reg, lit`, or `instr reg, &name`, or `instr reg, [reg]`");
+    else if (qasm_code[cur] == '&') {
+        ++cur;
+        while (isalpha(qasm_code[cur]) || qasm_code[cur] == '_') {
+            ++cur;
+        }
+
+        while (isspace(qasm_code[cur]) || qasm_code[cur] == ',') {
+            ++cur;
+        }
+
+        if (isalpha(qasm_code[cur])) {
+            cur = save_cur;
+            return instr_type::addr_reg;
+        } else if (isdigit(qasm_code[cur]) || (qasm_code[cur] == '-' && isdigit(qasm_code[cur + 1]))) {
+            cur = save_cur;
+            return instr_type::addr_lit;
+        }
+    }
+
+    else {
+        while (isalpha(qasm_code[cur])) {
+            ++cur;
+        }
+
+        while (isspace(qasm_code[cur]) || qasm_code[cur] == ',') {
+            ++cur;
+        }
+
+        if (isalpha(qasm_code[cur])) {
+            cur = save_cur;
+            return instr_type::reg_reg;
+        } else if (isdigit(qasm_code[cur]) || (qasm_code[cur] == '-' && isdigit(qasm_code[cur + 1]))) {
+            cur = save_cur;
+            return instr_type::reg_lit;
+        } else if (qasm_code[cur] == '&') {
+            cur = save_cur;
+            return instr_type::reg_addr;
+        } else if (qasm_code[cur] == '[') {
+            cur = save_cur;
+            return instr_type::reg_addr_in_reg;
+        }
+        
+        throw std::runtime_error("ERR: syntax error, expected `instr reg, reg`, or `instr reg, lit`, or `instr reg, &name`, or `instr reg, [reg]`");
+    }
 }
