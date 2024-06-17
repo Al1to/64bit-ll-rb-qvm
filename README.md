@@ -373,7 +373,28 @@ double alpha_probability = std::norm(alpha);
 <br/>
 
 <a id="qasm"></a>
-#### Свой язык ассемблера (QASM)
+## Свой язык ассемблера (QASM
+
+<a id="qasm_syntax"></a>
+#### Синтаксис
+
+<a id="qasm_instrs"></a>
+#### Инструкции
+<a id="qasm_cinstrs"></a>
+##### Стандартные инструкции
+<a id="qasm_qinstrs"></a>
+##### Квантовые инструкции
+
+<a id="qasm_lbls"></a>
+#### Метки
+
+<a id="qasm_fns"></a>
+#### Функции
+
+<a id="qasm_datas"></a>
+#### Переменные
+<a id="qasm_arrays"></a>
+##### Косплей на массивы
 
 <br/>
 
