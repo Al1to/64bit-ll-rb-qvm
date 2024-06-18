@@ -368,6 +368,30 @@ double alpha_probability = std::norm(alpha);
       <td>Y</td>
       <td>// TODO:</td>
     </tr>
+    <tr>
+      <td>Z</td>
+      <td>// TODO:</td>
+    </tr>
+    <tr>
+      <td>RZ</td>
+      <td>// TODO:</td>
+    </tr>
+    <tr>
+      <td>CX <i>(CNOT)</i></td>
+      <td>// TODO:</td>
+    </tr>
+    <tr>
+      <td>CRZ</td>
+      <td>// TODO:</td>
+    </tr>
+    <tr>
+      <td>RST</td>
+      <td>// TODO:</td>
+    </tr>
+    <tr>
+      <td>SWAP</td>
+      <td>// TODO:</td>
+    </tr>
   </tbody>
 </table>
 <br/>
